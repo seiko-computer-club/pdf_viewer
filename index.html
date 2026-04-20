@@ -80,8 +80,10 @@
 
     <main class="flex-grow relative w-full h-full z-0 overflow-hidden">
         
-        <div id="scroll-container" class="relative overflow-auto w-full h-full flex">
-            <canvas id="pdf-render" class="m-auto object-contain transition-transform duration-200 origin-center shadow-lg"></canvas>
+        <div id="scroll-container" class="w-full h-full overflow-auto">
+            <div class="min-w-full min-h-full flex items-center justify-center">
+                <canvas id="pdf-render" class="object-contain transition-transform duration-200 origin-center shadow-lg"></canvas>
+            </div>
         </div>
         
         <button id="pc-btn-prev" class="absolute left-4 top-1/2 -translate-y-1/2 p-4 rounded-full bg-black/10 hover:bg-black/20 text-current transition hidden lg:flex z-10 backdrop-blur-sm" title="前のページ">
@@ -322,8 +324,8 @@
             sliderMaxLabel.textContent = pdfDoc.numPages;
             sliderEl.max = pdfDoc.numPages;
             
-            // 右開き（漫画等）の場合は最終ページからスタートする
-            if(isRTL) { pageNum = pdfDoc.numPages; }
+            // 修正：ファイル自体のページ順は1からなので、常に1ページ目からスタートする
+            pageNum = 1;
             renderPage(pageNum);
             
             // アプリ起動直後はUIを表示し、2秒後に自動で隠す
@@ -394,11 +396,12 @@
             menuThemeLabel.textContent = themeNames[currentTheme];
         };
 
-        // フルスクリーン切り替え（各ブラウザのベンダープレフィックス対応）
+        // フルスクリーン切り替え（Safari・スマホ対応版）
         const toggleFullscreen = () => {
             const doc = window.document;
             const docEl = doc.documentElement;
 
+            // 各ブラウザ用のプレフィックスを考慮
             const requestFullScreen = docEl.requestFullscreen || docEl.webkitRequestFullScreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
             const cancelFullScreen = doc.exitFullscreen || doc.webkitExitFullscreen || doc.mozCancelFullScreen || doc.msExitFullscreen;
 
